@@ -24,14 +24,11 @@ jobs:
         key: windows-vcpkg-x64-0 # Increase the number whenever dependencies are modified
         restore-keys: windows-vcpkg-x64
 
-    - name: Build dependencies
-      run: |
-        vcpkg install --triplet=x64-windows-static-md
     - name: Build pfaedle
       run: |
         mkdir ${{ github.workspace }}\build        
         cd ${{ github.workspace }}\build && cmake -DVCPKG_TARGET_TRIPLET="x64-windows-static-md" -DCMAKE_TOOLCHAIN_FILE="c:\vcpkg\scripts\buildsystems\vcpkg.cmake"  ..
-        cd ${{ github.workspace }}\build && cmake --build . --config RelWithDebInfo    
+        cd ${{ github.workspace }}\build && make -j    
     - name: 'Upload compiled executable'
       uses: actions/upload-artifact@v2
       with:
