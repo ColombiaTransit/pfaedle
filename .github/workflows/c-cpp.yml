@@ -1,0 +1,42 @@
+name: "Continuous Integration"
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+env:
+  AREA: liechtenstein
+
+jobs:
+
+  Windows-Build:
+    name: Windows build
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Enable vcpkg cache
+      uses: actions/cache@v2
+      with:
+        path: c:\vcpkg\installed
+        key: windows-vcpkg-x64-0 # Increase the number whenever dependencies are modified
+        restore-keys: windows-vcpkg-x64
+
+    - name: Build dependencies
+      run: |
+        vcpkg install --triplet=x64-windows-static-md
+    - name: Build pfaedle
+      run: |
+        mkdir ${{ github.workspace }}\build        
+        cd ${{ github.workspace }}\build && cmake -DVCPKG_TARGET_TRIPLET="x64-windows-static-md" -DCMAKE_TOOLCHAIN_FILE="c:\vcpkg\scripts\buildsystems\vcpkg.cmake"  ..
+        cd ${{ github.workspace }}\build && cmake --build . --config RelWithDebInfo    
+    - name: 'Upload compiled executable'
+      uses: actions/upload-artifact@v2
+      with:
+        name: pfaedle-windows
+        path: |
+          ${{ github.workspace }}\resources
+          ${{ github.workspace }}\build\RelWithDebInfo\tilemaker.exe
+          ${{ github.workspace }}\build\RelWithDebInfo\*.pdb
