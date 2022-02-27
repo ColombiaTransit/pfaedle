@@ -23,6 +23,10 @@ jobs:
         path: c:\vcpkg\installed
         key: windows-vcpkg-x64-0 # Increase the number whenever dependencies are modified
         restore-keys: windows-vcpkg-x64
+    
+    - name: Build dependencies
+      run: |
+        vcpkg install --triplet=x64-windows-static-md zlib protobuf[zlib]
 
     - name: Build pfaedle
       run: |
