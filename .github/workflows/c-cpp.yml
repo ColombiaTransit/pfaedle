@@ -26,7 +26,7 @@ jobs:
     
     - name: Build dependencies
       run: |
-        vcpkg install --triplet=x64-windows-static-md zlib protobuf[zlib]
+        vcpkg install --triplet=x64-windows-static-md zlib
 
     - name: Build pfaedle
       run: |
