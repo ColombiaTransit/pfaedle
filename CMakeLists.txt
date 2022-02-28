@@ -10,6 +10,10 @@ if (CMAKE_BUILD_TYPE STREQUAL "DEBUG")
 	include(cmake/cpplint.cmake)
 endif()
 
+if (POLICY CMP0074)
+  cmake_policy(SET CMP0074 OLD)
+endif()
+
 set(CPPLINT_PROJECT_ROOT "src")
 
 enable_testing()
@@ -66,7 +70,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPFAEDLE_PRECISION=${PFAEDLE_PRECISION}
 include(GetGitRevisionDescription)
 git_get_tag(VERSION_GIT)
 get_git_is_dirty(VERSION_GIT_IS_DIRTY)
-if (${VERSION_GIT_IS_DIRTY} STREQUAL "")
+if ("${VERSION_GIT_IS_DIRTY}" STREQUAL "")
 	set(VERSION_GIT_FULL "${VERSION_GIT}")
 else()
 	set(VERSION_GIT_FULL "${VERSION_GIT}-${VERSION_GIT_IS_DIRTY}")
