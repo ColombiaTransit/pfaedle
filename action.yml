@@ -1,0 +1,22 @@
+name: 'pfaerdle'
+description: 'Make gtfs shape files based on Openstreetmap data without the stack'
+inputs:
+  osmfile:
+    description: 'An .osm file from planet extract, as typically downloaded from providers like Geofabrik'
+    required: true  
+  folder:
+    description: 'Could be directory of tiles, or a .mbtiles files'
+    required: true
+    default: '.'
+  extra:
+    description: 'Other options for tilemaker'
+    required: false
+    default: '--verbose'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - -D
+    - -x=${{ inputs.osmfile }}
+    - ${{ inputs.folder }}    
+    - ${{ inputs.extra }}
