@@ -9,7 +9,7 @@
 # pfaedle
 
 Precise OpenStreetMap (OSM) map-matching for public transit schedules ([GTFS](https://developers.google.com/transit/gtfs/reference/) data).
-First described in [this 2018 SIGSPATIAL paper](http://ad-publications.informatik.uni-freiburg.de/SIGSPATIAL_Sparse%20map%20matching%202018.pdf). 
+First described in [this 2018 SIGSPATIAL paper](http://ad-publications.informatik.uni-freiburg.de/SIGSPATIAL_Sparse%20map%20matching%202018.pdf).
 
 For a quick visual inspection of the shape quality, see for example the schedule data for Germany or Switzerland in our tool [TRAVIC](https://travic.app/?z=7&x=1261608.6&y=6430601.6).
 
@@ -17,6 +17,7 @@ For a quick visual inspection of the shape quality, see for example the schedule
 
  * `cmake`
  * `gcc >= 5.0` (or `clang >= 3.9`)
+ * `libzip` (optional, for ZIP support)
 
 ## Building and Installation
 
@@ -42,7 +43,7 @@ make install
 ## Generating shapes for a GTFS feed
 
 ```
-pfaedle -x <OSM FILE> <GTFS INPUT FOLDER>
+pfaedle -x <OSM FILE> <GTFS INPUT FEED>
 ```
 
 A shape'd version of the input GTFS feed will be written to `./gtfs-out`.
@@ -53,9 +54,9 @@ input feed. To drop all existing shapes, use the `-D` flag.
 For example, you may generate (and replace existing, see -D parameter) shapes for the GTFS dataset for Freiburg like this:
 
 ```
-$ wget https://fritz.freiburg.de/csv_Downloads/VAGFR.zip && unzip VAGFR.zip
+$ wget https://fritz.freiburg.de/csv_Downloads/VAGFR.zip
 $ wget http://download.geofabrik.de/europe/germany/baden-wuerttemberg/freiburg-regbez-latest.osm.bz2 && bunzip2 freiburg-regbez-latest.osm.bz2
-$ pfaedle -D -x freiburg-regbez-latest.osm .
+$ pfaedle -D -x freiburg-regbez-latest.osm VAGFR.zip
 ```
 
 ## Generating shapes for a specific MOT
