@@ -1,7 +1,7 @@
-[![Left: station-to-station path of a single train through Switzerland obtained from schedule timetable data. Right: path of the same train map-matched by pfaedle.](geo/schweiz_ex_res.png?raw=true)](geo/schweiz_ex.png?raw=true)
+[![Left: station-to-station path of a single train through Switzerland obtained from schedule timetable data. Right: path of the same train map-matched by pfaedle.](geo/schweiz_ex_res.png?raw=true)](geo/schweiz_ex.png?raw=true)  
 *Left: station-to-station path of a single train through Switzerland obtained from official schedule data. Right: path of the same train map-matched by pfaedle.*
 
-[![Left: station-to-station path of a single bus through Stuttgart obtained from official schedule data. Right: path of the same bus map-matched by pfaedle.](geo/stuttgart_ex_res.png?raw=true)](geo/stuttgart_ex.png?raw=true)
+[![Left: station-to-station path of a single bus through Stuttgart obtained from official schedule data. Right: path of the same bus map-matched by pfaedle.](geo/stuttgart_ex_res.png?raw=true)](geo/stuttgart_ex.png?raw=true)  
 *Left: station-to-station path of a single bus through Stuttgart obtained from official schedule data. Right: path of the same bus map-matched by pfaedle.*
 
 [![Build](https://github.com/ad-freiburg/pfaedle/actions/workflows/build.yml/badge.svg)](https://github.com/ad-freiburg/pfaedle/actions/workflows/build.yml)
@@ -25,27 +25,27 @@ For a quick visual inspection of the shape quality, see for example the schedule
 
 Fetch this repository and init submodules:
 
-```
-git clone --recurse-submodules https://github.com/ad-freiburg/pfaedle
+```shell
+$ git clone --recurse-submodules https://github.com/ad-freiburg/pfaedle
 ```
 
-```
-mkdir build && cd build
-cmake ..
-make -j
+```shell
+$ mkdir build && cd build
+$ cmake ..
+$ make -j
 ```
 
 To install, type
-```
-make install
+```shell
+$ make install
 ```
 
 # General Usage
 
 ## Generating shapes for a GTFS feed
 
-```
-pfaedle -x <OSM FILE> <GTFS INPUT FEED>
+```shell
+$ pfaedle -x <OSM FILE> <GTFS INPUT FEED>
 ```
 
 A shape'd version of the input GTFS feed will be written to `./gtfs-out`.
@@ -55,7 +55,7 @@ input feed. To drop all existing shapes, use the `-D` flag.
 
 For example, you may generate (and replace existing, see `-D` flag) shapes for the GTFS dataset for Freiburg like this:
 
-```
+```shell
 $ wget https://fritz.freiburg.de/csv_Downloads/VAGFR.zip
 $ wget http://download.geofabrik.de/europe/germany/baden-wuerttemberg/freiburg-regbez-latest.osm.bz2
 $ pfaedle -D -x freiburg-regbez-latest.osm.bz2 VAGFR.zip
@@ -81,16 +81,20 @@ run.
 
 ## via Docker
 
-You can use the [`adfreiburg/pfaedle` Docker image](https://hub.docker.com/r/adfreiburg/pfaedle) by mounting the OSM & GTFS data into the container:
+You can use the [Docker image](https://github.com/orgs/ad-freiburg/packages/container/package/pfaedle) by mounting the OSM & GTFS data into the container:
 
 ```shell
-docker run -i --rm \
+$ docker pull ghcr.io/ad-freiburg/pfaedle:latest
+$ docker run -i --rm \
 	# mount OSM data
 	--volume /path/to/osm/data:/osm \
 	# mount GTFS data
 	--volume /path/to/gtfs/data:/gtfs \
+	# mount default output folder gtfs-out
+	--volume /path/to/output-dir:/gtfs-out \
+	ghcr.io/ad-freiburg/pfaedle:latest \
 	# tell pfaedle where to find the data
-	adfreiburg/pfaedle -x /osm/osm-data.xml -i /gtfs
+	-x /osm/osm-data.xml.bz2 -i /gtfs/myfeed.zip
 ```
 
 ## Debugging
@@ -105,3 +109,7 @@ The following flags may be useful for debugging:
 # Configuration
 
 A default configuration file `pfaedle.cfg` can be found in this repo and will be installed with `make install`. Custom configuration files can be specified with the `-c` flag. If no `-c` flag is set, `pfaedle` will parse and merge the following cfg files in the given order (if present): `<install prefix>/etc/pfaedle/pfaedle.cfg`, `$HOME/.config/pfaedle/pfaedle.cfg`, `<CWD>/pfaedle.cfg`. Values given in later files will overwrite earlier defined values.
+
+# Attribution
+
+Note that the `shapes.txt` produced by `pfaedle` is based on OpenStreetMap data, which is licensed under ODbL 1.0 (see [here](https://osm.org/copyright)). If you copy, distribute, transmit or adapt the shapefied GTFS feed, please credit the contributors of OpenStreetMap.
