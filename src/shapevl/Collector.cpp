@@ -23,6 +23,11 @@ using ad::cppgtfs::gtfs::Trip;
 using pfaedle::eval::Collector;
 using pfaedle::eval::Result;
 using util::geo::output::GeoJsonOutput;
+using util::WARN;
+using util::INFO;
+using util::ERROR;
+using util::DEBUG;
+using util::VDEBUG;
 
 // _____________________________________________________________________________
 double Collector::add(const Trip* oldT, const Shape* oldS, size_t numOldTrips,
@@ -230,14 +235,15 @@ double Collector::add(const Trip* oldT, const Shape* oldS, size_t numOldTrips,
     } else if (_reportLevel == 2) {
       (*_reportOut) << std::fixed << std::setprecision(6);
       (*_reportOut) << oldT->getId() << "\t" << AN << "\t" << AL << "\t"
-                    << avgFd << "\t" << fd << "\t"
-                    << d
-                    << "\t"
-                    << lenDiff
+                    << avgFd << "\t" << fd << "\t" << d << "\t" << lenDiff
                     << "\t" << util::geo::getWKT(oldSegs) << "\t"
                     << util::geo::getWKT(newSegs) << "\t"
-                    << oldT->getRoute()->getShortName() << "\t"
-                    << numOldTrips << "\t";
+                    << oldT->getRoute()->getShortName() << "\t" << numOldTrips
+                    << "\t"
+                    << ad::cppgtfs::gtfs::flat::Route::getTypeString(
+                           ad::cppgtfs::gtfs::flat::Route::getStandardRouteType(
+                               oldT->getRoute()->getType()))
+                    << "\t";
 
       for (const auto& st : oldT->getStopTimes()) {
         (*_reportOut) << st.getStop()->getName() << "\t"
@@ -512,7 +518,8 @@ std::map<string, double> Collector::getStats() {
 
 // _____________________________________________________________________________
 std::pair<size_t, double> Collector::getDa(const std::vector<LINE>& a,
-                                           const std::vector<LINE>& b, double segLen) {
+                                           const std::vector<LINE>& b,
+                                           double segLen) {
   assert(a.size() == b.size());
   std::pair<size_t, double> ret{0, 0};
 
